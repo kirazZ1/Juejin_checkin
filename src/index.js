@@ -1,7 +1,7 @@
 /*
  * @Author: KiraZz1
  * @Date: 2022-01-01 10:59:47
- * @LastEditTime: 2022-01-02 12:57:16
+ * @LastEditTime: 2022-01-02 14:12:56
  * @LastEditors: Please set LastEditors
  * @Description: 掘金签到脚本-主文件
  * @FilePath:juejin\src\index.js
@@ -12,12 +12,16 @@ import {
     config
 } from './config/config.js';
 
-import schedule from 'node-schedule';   
+import schedule from 'node-schedule';
 
 import {
     emailTo
 } from './utils/email.js'
 
+
+import {
+    ejsComplier
+} from '../utils/ejs_complier.js'
 
 const {
     userName,
@@ -31,6 +35,7 @@ const {
 } = config;
 
 
+/**从config.js中读取smtp配置 */
 const smtpConfig = {
     host: smtp,
     port: 465,
@@ -41,7 +46,7 @@ const smtpConfig = {
     }
 };
 
-
+/**从config.js中读取发送方，接收方，标题昵称 */
 const mailOptions = {
     from: mailFrom, // 发送者
     to: mailTo, // 接受者,可以同时发送多个,以逗号隔开
@@ -71,8 +76,10 @@ const check_in = async (config) => {
         },
         credentials: 'include'
     }); //获取当天签到状态，若已签到不做操作，若未签到则进行签到
-    if (today_status.err_no !== 0) return emailTo(smtpConfig, mailOptions, 'text', `签到失败，要修bug了~~~`);
-    if (today_status.data) return emailTo(smtpConfig, mailOptions, 'text', `今日已经签到！`);
+    if (today_status.err_no !== 0)
+        return emailTo(smtpConfig, mailOptions, 'text', `签到失败，要修bug了~~~`);
+    if (today_status.data)
+        return emailTo(smtpConfig, mailOptions, 'text', `今日已经签到！`);
     let {
         data
     } = await axios({
@@ -85,11 +92,18 @@ const check_in = async (config) => {
     if (data?.err_msg === '您今日已完成签到，请勿重复签到') {
         return console.log('您今日已完成签到，请勿重复签到');
     } else {
-        return emailTo(smtpConfig, mailOptions, type = 'text', `签到成功！当前积分：${data.data.sum_point}`);
+        const template = await ejsComplier('/src/template/success.ejs', {
+            userName: userName,
+            date: new Date().toLocaleString(),
+        });
+        return emailTo(smtpConfig, mailOptions, 'html', template);
     }
 };
 
-
+/**
+ * 签到定时任务方法
+ * @param {*} config 
+ */
 function scheduleCronstyle(config) {
     schedule.scheduleJob('30 1 1 * * *', () => { //每天1：30自动签到
         check_in(config);
