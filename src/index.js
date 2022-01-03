@@ -1,7 +1,7 @@
 /*
  * @Author: KiraZz1
  * @Date: 2022-01-01 10:59:47
- * @LastEditTime: 2022-01-02 14:12:56
+ * @LastEditTime: 2022-01-03 09:21:35
  * @LastEditors: Please set LastEditors
  * @Description: 掘金签到脚本-主文件
  * @FilePath:juejin\src\index.js
@@ -14,6 +14,8 @@ import {
 
 import schedule from 'node-schedule';
 
+import dayjs from 'dayjs';
+
 import {
     emailTo
 } from './utils/email.js'
@@ -21,7 +23,7 @@ import {
 
 import {
     ejsComplier
-} from '../utils/ejs_complier.js'
+} from './utils/ejs_complier.js'
 
 const {
     userName,
@@ -94,7 +96,7 @@ const check_in = async (config) => {
     } else {
         const template = await ejsComplier('/src/template/success.ejs', {
             userName: userName,
-            date: new Date().toLocaleString(),
+            date: dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'),
         });
         return emailTo(smtpConfig, mailOptions, 'html', template);
     }
@@ -105,7 +107,7 @@ const check_in = async (config) => {
  * @param {*} config 
  */
 function scheduleCronstyle(config) {
-    schedule.scheduleJob('30 1 1 * * *', () => { //每天1：30自动签到
+    schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
         check_in(config);
     });
 };

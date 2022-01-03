@@ -1,7 +1,7 @@
 /*
  * @Author: KiraZz1
  * @Date: 2022-01-02 13:08:51
- * @LastEditTime: 2022-01-02 14:11:09
+ * @LastEditTime: 2022-01-03 09:20:47
  * @LastEditors: Please set LastEditors
  * @Description: 掘金签到脚本-测试用例
  * @FilePath: \juejin\src\test\index.js
@@ -14,6 +14,8 @@ import {
 import {
     config
 } from '../config/config.js';
+
+import dayjs from 'dayjs';
 
 import { ejsComplier} from '../utils/ejs_complier.js'
 
@@ -65,5 +67,11 @@ const testEmailSendText = () => {
     emailTo(smtpConfig, mailOptions, 'html', template);
 }
 
+/**
+ *  测试当前时间格式化 
+ */
+const testCurrentTimeFormat = () => {
+    console.log(dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'))
+}
 
-testEmailSendHtml()
+testCurrentTimeFormat()
