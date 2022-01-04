@@ -1,8 +1,8 @@
 /*
- * @Author: your name
+ * @Author: KiraZz1
  * @Date: 2022-01-01 11:28:57
- * @LastEditTime: 2022-01-02 13:22:52
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-01-03 09:41:55
+ * @LastEditors: KiraZz1
  * @Description: 掘金签到脚本-邮件发送
  * @FilePath: \juejin\src\email.js
  */
@@ -17,9 +17,9 @@ export const emailTo = (smtpConfig, mailOptions, type = 'text', contain) => {
         ...mailOptions
     };
     if (type === 'text') {
-        newMailOptions.text = contain
+        newMailOptions.text = contain;
     } else if (type === 'html') {
-        newMailOptions.html = contain
+        newMailOptions.html = contain;
     } else {
         return
     }

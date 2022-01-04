@@ -1,7 +1,7 @@
 /*
  * @Author: KiraZz1
  * @Date: 2022-01-02 13:08:51
- * @LastEditTime: 2022-01-03 09:20:47
+ * @LastEditTime: 2022-01-04 15:09:21
  * @LastEditors: Please set LastEditors
  * @Description: 掘金签到脚本-测试用例
  * @FilePath: \juejin\src\test\index.js
@@ -19,8 +19,12 @@ import dayjs from 'dayjs';
 
 import { ejsComplier} from '../utils/ejs_complier.js'
 
+import axios from 'axios';
+
+
 const {
     userName,
+    cookie,
     mail: {
         smtp,
         mailFrom,
@@ -74,4 +78,25 @@ const testCurrentTimeFormat = () => {
     console.log(dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'))
 }
 
-testCurrentTimeFormat()
+
+/**
+ *  测试查询免费抽奖次数
+ */
+ const testCheckFreeDraw = () => {
+     // 查询今日是否有免费抽奖机会
+     const today = axios.request('https://api.juejin.cn/growth_api/v1/lottery_config/get', {
+        headers: {
+          cookie: cookie
+        },
+        method: 'GET',
+        credentials: 'include'
+    }).then((res) => {
+          let { data } = res
+          let { data : { free_count }} = data
+          console.log(free_count)
+    });
+  
+
+}
+
+testDraw()

@@ -1,7 +1,7 @@
 /*
  * @Author: KiraZz1
  * @Date: 2022-01-01 10:59:47
- * @LastEditTime: 2022-01-03 09:21:35
+ * @LastEditTime: 2022-01-04 15:53:20
  * @LastEditors: Please set LastEditors
  * @Description: 掘金签到脚本-主文件
  * @FilePath:juejin\src\index.js
@@ -57,6 +57,61 @@ const mailOptions = {
 
 
 
+
+/**
+ * 每日免费抽奖逻辑
+ * @param {*} config 
+ * @returns lottery_name
+ */
+ const freeLottery = async (config) => {
+    const {
+        baseUrl,
+        apiUrl,
+        cookie
+    } = config;
+    const lotteryStatus = await axios.request(baseUrl + apiUrl.getLotteryConfig, {
+        headers: {
+            cookie: cookie
+        },
+        method: 'GET',
+        credentials: 'include'
+    });
+    const {
+        data
+    } = lotteryStatus;
+    const {
+        data: {
+            free_count
+        },
+        err_no
+    } = data;
+    if (err_no !== 0) return console.log('免费抽奖失败！');
+
+    if (free_count !== 1) {
+        return console.log("无免费抽奖次数！");
+    } else {
+        const freeLottery = await axios.request(baseUrl + apiUrl.drawLottery, {
+            headers: {
+                cookie: cookie
+            },
+            method: 'POST',
+            credentials: 'include'
+        });
+        if (freeLottery.err_no !== 0) return console.log('免费抽奖失败！');
+        const {
+            data: {
+                data: {
+                    lottery_name,
+                    lottery_type
+                }
+            }
+        } = freeLottery;
+        console.log(`今天免费抽奖抽到了${lottery_name}${lottery_type === 2 ? ',真辣鸡':''}`);
+        return lottery_name;
+    }
+}
+
+
 /**
  * 签到逻辑check_in
  * @param {*} config 
@@ -72,7 +127,7 @@ const check_in = async (config) => {
         data: today_status
     } = await axios({
         method: 'get',
-        url: 'https://api.juejin.cn/growth_api/v1/get_today_status',
+        url: baseUrl + apiUrl.getTodayStatus,
         headers: {
             cookie: cookie
         },
@@ -94,13 +149,19 @@ const check_in = async (config) => {
     if (data?.err_msg === '您今日已完成签到，请勿重复签到') {
         return console.log('您今日已完成签到，请勿重复签到');
     } else {
+        let giftName = await freeLottery(config);
         const template = await ejsComplier('/src/template/success.ejs', {
             userName: userName,
             date: dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'),
+            giftName:giftName
         });
         return emailTo(smtpConfig, mailOptions, 'html', template);
     }
 };
+
+
+
+
 
 /**
  * 签到定时任务方法
@@ -110,6 +171,7 @@ function scheduleCronstyle(config) {
     schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
         check_in(config);
     });
+    
 };
 
 
