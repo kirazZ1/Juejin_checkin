@@ -18,15 +18,15 @@ import path from 'path'
  * @param {*} props 
  * @returns 
  */
-export const ejsComplier = (htmlPath,props) =>{
-    return new Promise((resolve,reject) => {
+export const ejsComplier = (htmlPath, props) => {
+    return new Promise((resolve, reject) => {
         try {
             let template = null;
-            fs.readFile(path.resolve()+htmlPath,'utf8',(error,data)=>{
+            fs.readFile(path.resolve() + htmlPath, 'utf8', (error, data) => {
                 template = ejs.render(data, props);
                 resolve(template);
             })
-        }catch(e) {
+        } catch (e) {
             reject(e);
         }
     })

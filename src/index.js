@@ -8,43 +8,27 @@
  */
 import axios from 'axios';
 
-import {
-    config
-} from './config/config.js';
+import { config } from './config/config.js';
 
 import schedule from 'node-schedule';
 
 import dayjs from 'dayjs';
 
-import {
-    emailTo
-} from './utils/email.js'
+import { emailTo } from './utils/email.js'
 
 
-import {
-    ejsComplier
-} from './utils/ejs_complier.js'
+import { ejsComplier } from './utils/ejs_complier.js'
 
-const {
-    userName,
-    mail: {
-        smtp,
-        mailFrom,
-        mailTo,
-        mailPwd
-    }
-
-} = config;
+const { userName, mail: { smtp, mailFrom, mailTo, mailPwd } } = config;
 
 
 /**从config.js中读取smtp配置 */
 const smtpConfig = {
-    host: smtp,
-    port: 465,
-    auth: {
-        user: mailFrom,
-        pass: mailPwd //授权码,通过QQ获取
-
+    host: smtp, 
+    port: 465, 
+    auth: { 
+        user: mailFrom, 
+        pass: mailPwd 
     }
 };
 
@@ -63,7 +47,7 @@ const mailOptions = {
  * @param {*} config 
  * @returns lottery_name
  */
- const freeLottery = async (config) => {
+const freeLottery = async (config) => {
     const {
         baseUrl,
         apiUrl,
@@ -97,7 +81,8 @@ const mailOptions = {
             method: 'POST',
             credentials: 'include'
         });
-        if (freeLottery.err_no !== 0) return console.log('免费抽奖失败！');
+        const { data: { err_no } } = freeLottery
+        if (err_no !== 0) return console.log('免费抽奖失败！');
         const {
             data: {
                 data: {
@@ -106,7 +91,7 @@ const mailOptions = {
                 }
             }
         } = freeLottery;
-        console.log(`今天免费抽奖抽到了${lottery_name}${lottery_type === 2 ? ',真辣鸡':''}`);
+        console.log(`今天免费抽奖抽到了${lottery_name}${lottery_type === 2 ? ',真辣鸡' : ''}`);
         return lottery_name;
     }
 }
@@ -153,7 +138,7 @@ const check_in = async (config) => {
         const template = await ejsComplier('/src/template/success.ejs', {
             userName: userName,
             date: dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'),
-            giftName:giftName
+            giftName: giftName
         });
         return emailTo(smtpConfig, mailOptions, 'html', template);
     }
@@ -171,8 +156,9 @@ function scheduleCronstyle(config) {
     schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
         check_in(config);
     });
-    
+
 };
 
 
-scheduleCronstyle(config);
+// scheduleCronstyle(config);
+freeLottery(config)

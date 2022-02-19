@@ -93,10 +93,23 @@ const testCurrentTimeFormat = () => {
     }).then((res) => {
           let { data } = res
           let { data : { free_count }} = data
-          console.log(free_count)
+          console.log(`剩余免费抽奖次数：${free_count}`)
     });
-  
-
 }
 
+const testDraw =  () => {
+    const freeLottery = axios.request('https://api.juejin.cn/growth_api/v1/lottery/draw', {
+        headers: {
+            cookie: cookie
+        },
+        method: 'POST',
+        credentials: 'include'
+    }).then(res => console.log(res.data.err_no));
+    
+}
+
+
+
+
+testCurrentTimeFormat()
 testDraw()
