@@ -25,9 +25,8 @@ export const emailTo = (smtpConfig, mailOptions, type = 'text', contain) => {
     }
 
     //发送邮件
-    transporter.sendMail(newMailOptions, (error, info) => {     //本地测试用的输出，实际没啥卵用
-        if (error)
-            return console.log(error);
+    transporter.sendMail(newMailOptions, (error, info) => {     
+        if (error) return console.log(error);
         console.log(`Message: ${info.messageId}`);
         console.log(`sent: ${info.response}`);
     });
