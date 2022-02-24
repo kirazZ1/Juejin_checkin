@@ -17,7 +17,7 @@ import { emailTo } from './utils/email.js'
 
 import { ejsComplier } from './utils/ejs_complier.js'
 
-import { getLotteryStatus, getFreeLottery, getTodayStatus, checkIn } from './api/index.js'
+import { getLotteryStatus, getFreeLottery, getTodayStatus, checkIn, drawLottery } from './api/index.js'
 
 const { userName, mail: { smtp, mailFrom, mailTo, mailPwd } } = config;
 
@@ -53,7 +53,7 @@ const freeLottery = async (config) => {
     if (free_count !== 1) {
         return console.log("无免费抽奖次数！");
     } else {
-        const freeLottery = await getFreeLottery();
+        const freeLottery = await drawLottery();
         const { data: { err_no, data: { lottery_name, lottery_type } } } = freeLottery
         if (err_no !== 0) return console.log('免费抽奖失败！');
         console.log(`今天免费抽奖抽到了${lottery_name}${lottery_type === 2 ? ',真辣鸡' : ''}`);
@@ -100,11 +100,12 @@ const check_in = async (config) => {
  * 签到定时任务方法
  * @param {*} config 
  */
-function scheduleCronstyle(config) {
-    schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
-        check_in(config);
-    });
+// function scheduleCronstyle(config) {
+//     schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
+//         check_in(config);
+//     });
 
-};
+// };
 
-scheduleCronstyle(config);
+// scheduleCronstyle(config);
+check_in(config);

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "pm2 start src/index.js --name Juejin_checkin"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,8 @@
     "node-schedule": "^2.1.0",
     "nodemailer": "^6.7.2"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "jest": "^27.5.1"
+  }
 }
