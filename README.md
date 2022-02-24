@@ -48,7 +48,7 @@ git clone https://github.com/kirazZ1/Juejin_checkin.git
 
 进入项目目录，执行：
 ```
-pm2 start src/index.js --name Juejin_checkin
+npm run dev
 ```
 
 
