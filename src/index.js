@@ -47,17 +47,21 @@ const mailOptions = {
  * @returns lottery_name
  */
 const freeLottery = async (config) => {
-    const { data: lotteryStatus } = await getLotteryStatus();
-    const { data: { free_count }, err_no } = lotteryStatus;
-    if (err_no !== 0) return console.log('免费抽奖失败！');
-    if (free_count !== 1) {
-        return console.log("无免费抽奖次数！");
-    } else {
-        const freeLottery = await drawLottery();
-        const { data: { err_no, data: { lottery_name, lottery_type } } } = freeLottery
-        if (err_no !== 0) return console.log('免费抽奖失败！');
-        console.log(`今天免费抽奖抽到了${lottery_name}${lottery_type === 2 ? ',真辣鸡' : ''}`);
-        return lottery_name;
+    try {
+        const { data: lotteryStatus } = await getLotteryStatus();
+        const { data: { free_count }, err_no } = lotteryStatus;
+        if (err_no !== 0) return console.log('[ERROR]:免费抽奖失败！');
+        if (free_count !== 1) {
+            return console.log("[WARNING]:无免费抽奖次数！");
+        } else {
+            const freeLottery = await drawLottery();
+            const { data: { err_no, data: { lottery_name, lottery_type } } } = freeLottery
+            if (err_no !== 0) return console.log('[ERROR]:免费抽奖失败！');
+            console.log(`[SUCCESS]:今天免费抽奖抽到了${lottery_name}${lottery_type === 2 ? ',真辣鸡' : ''}`);
+            return lottery_name;
+        }
+    } catch (e) {
+        console.log(`[ERROR]:${e}`)
     }
 }
 
@@ -74,22 +78,17 @@ const check_in = async (config) => {
             return emailTo(smtpConfig, mailOptions, 'text', `签到失败，要修bug了~~~`);
         if (today_status.data)
             return emailTo(smtpConfig, mailOptions, 'text', `今日已经签到！`);
-        let { data } = await checkIn();
-        if (data?.err_msg === '您今日已完成签到，请勿重复签到') {
-            return console.log('您今日已完成签到，请勿重复签到');
-        } else {
-            let giftName = await freeLottery(config);
-            const template = await ejsComplier('/src/template/success.ejs', {
-                userName: userName,
-                date: dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'),
-                giftName: giftName
-            });
-            return emailTo(smtpConfig, mailOptions, 'html', template);
-        }
+        let check_in = await checkIn();
+        let giftName = await freeLottery(config);
+        const template = await ejsComplier('/src/template/success.ejs', {
+            userName: userName,
+            date: dayjs(new Date()).locale('zh-cn').format('YYYY年MM月DD日 HH:mm:ss'),
+            giftName: giftName
+        });
+        return emailTo(smtpConfig, mailOptions, 'html', template);
     } catch (err) {
-        console.log(`${err}`);
+        console.log(`[ERROR]:${err}`);
     }
-
 };
 
 
@@ -100,12 +99,11 @@ const check_in = async (config) => {
  * 签到定时任务方法
  * @param {*} config 
  */
-// function scheduleCronstyle(config) {
-//     schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
-//         check_in(config);
-//     });
+function scheduleCronstyle(config) {
+    schedule.scheduleJob('0 30 1 * * *', () => { //每天1：30自动签到
+        check_in(config);
+    });
 
-// };
+};
 
-// scheduleCronstyle(config);
-check_in(config);
+scheduleCronstyle(config);
