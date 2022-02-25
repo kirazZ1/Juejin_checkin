@@ -6,8 +6,6 @@ const { apiUrl } = config;
 
 export const getLotteryStatus = () => request(apiUrl.getLotteryConfig, 'GET')
 
-export const getFreeLottery = () => request(apiUrl.getLotteryConfig, 'GET')
-
 export const getTodayStatus = () => request(apiUrl.getTodayStatus, 'GET')
 
 export const drawLottery = () => request(apiUrl.drawLottery, 'POST')

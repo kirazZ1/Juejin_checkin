@@ -13,14 +13,13 @@ import schedule from 'node-schedule';
 
 import dayjs from 'dayjs';
 
-import { emailTo } from './utils/email.js'
+import { emailTo } from './utils/email.js';
 
-import { ejsComplier } from './utils/ejs_complier.js'
+import { ejsComplier } from './utils/ejs_complier.js';
 
-import { getLotteryStatus, getFreeLottery, getTodayStatus, checkIn, drawLottery } from './api/index.js'
+import { getLotteryStatus, getTodayStatus, checkIn, drawLottery } from './api/index.js';
 
 const { userName, mail: { smtp, mailFrom, mailTo, mailPwd } } = config;
-
 
 
 /**从config.js中读取smtp配置 */

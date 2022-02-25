@@ -9,9 +9,9 @@ const {
 
 axios.defaults.baseURL = baseUrl;  //默认设置为本地中间接口地址
 
-axios.defaults.headers.common['cookie'] = cookie
+axios.defaults.headers.common['cookie'] = cookie;   //注入cookie
 
-axios.defaults.headers.common['credentials'] = 'include'
+axios.defaults.headers.common['credentials'] = 'include'; 
 
 /**
  * request方法(因为脚本不需要传额外的数据过去，所以就不设计数据处理部分)

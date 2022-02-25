@@ -16,18 +16,18 @@ export const emailTo = (smtpConfig, mailOptions, type = 'text', contain) => {
     let newMailOptions = {
         ...mailOptions
     };
+
+    //根据邮件类型走不同分支
     if (type === 'text') {
         newMailOptions.text = contain;
     } else if (type === 'html') {
         newMailOptions.html = contain;
     } else {
-        return
+        return console.error("[ERROR]:传入数据格式错误")
     }
-
     //发送邮件
     transporter.sendMail(newMailOptions, (error, info) => {     
-        if (error) return console.log(error);
-        console.log(`Message: ${info.messageId}`);
-        console.log(`sent: ${info.response}`);
+        if (error) return console.log(`[ERROR]:${error}`);
+        console.log(`[SUCCESS]:Message: ${info.messageId},sent: ${info.response}`);
     });
 }
