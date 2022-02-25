@@ -1,31 +1,32 @@
 # Juejin_checkin
-掘金自动签到脚本
 
-该脚本基于axios和node-schedule，复用掘金签到接口进行定时签到（后续可能增加自动抽奖）
+掘金自动签到脚本（每日自动签到以及免费抽奖）
+
+该脚本基于axios请求掘金签到/抽奖API，使用node-schedule进行定时任务设置
 
 ## 环境配置
 
-使用时需要云服务器配置git和node环境
+使用时需要云服务器配置好git和node环境
 
-git环境配置：https://blog.csdn.net/xwj1992930/article/details/96428998
+git环境配置：<https://blog.csdn.net/xwj1992930/article/details/96428998>
 
-node环境配置：https://www.cnblogs.com/kingsonfu/p/14963663.html
+node环境配置：<https://www.cnblogs.com/kingsonfu/p/14963663.html>
 
-全局安装pm2:
+配置完node环境后全局安装pm2:
 
-```
+```bash
 npm install pm2 global
 ```
 
 ## 拉取项目
 
-```
+```bash
 git clone https://github.com/kirazZ1/Juejin_checkin.git
 ```
 
 ## 修改src中的config/config.js
 
-```
+```json
 {
     "userName":"昵称（自定义）",
     "baseUrl": "https://api.juejin.cn",       //不要修改
@@ -44,12 +45,13 @@ git clone https://github.com/kirazZ1/Juejin_checkin.git
     }
 }
 ```
+
 ## 启动项目
 
 进入项目目录，执行：
-```
+
+```bash
+npm i
+
 npm run dev
 ```
-
-
-
