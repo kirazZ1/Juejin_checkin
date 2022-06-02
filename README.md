@@ -4,6 +4,8 @@
 
 该脚本基于axios请求掘金签到/抽奖API，使用node-schedule进行定时任务设置
 
+cookies可能会过期，在收到签到失败邮件后，可以先尝试更换新的cookies
+
 ## 环境配置
 
 使用时需要云服务器配置好git和node环境
